@@ -2,8 +2,9 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plane, Ship, Truck, FileCheck, Warehouse, Network } from "lucide-react";
 import { Link } from "react-router-dom";
-import Scene3D from "@/components/3d/Scene3D";
+import ParallaxScene3D from "@/components/3d/ParallaxScene3D";
 import RotatingServiceIcon from "@/components/3d/RotatingServiceIcon";
+import { useScroll } from "@/hooks/use-scroll";
 
 const services = [
   {
@@ -51,19 +52,22 @@ const services = [
 ];
 
 const ServicesPreview = () => {
+  const { scrollY } = useScroll();
+  
   return (
     <section className="py-24 bg-gradient-subtle relative overflow-hidden">
-      {/* 3D Service Icons Background */}
+      {/* 3D Service Icons Background with Parallax */}
       <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <Scene3D enableControls={false}>
+        <ParallaxScene3D scrollY={scrollY} parallaxStrength={0.8}>
           {services.map((service, index) => (
             <RotatingServiceIcon 
               key={index}
               color={service.color.split(' ')[0].replace('from-', '#')}
               index={index}
+              scrollOffset={scrollY}
             />
           ))}
-        </Scene3D>
+        </ParallaxScene3D>
       </div>
 
       <div className="container mx-auto px-4 relative z-10">

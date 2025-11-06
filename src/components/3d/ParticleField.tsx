@@ -2,7 +2,11 @@ import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-const ParticleField = () => {
+interface ParticleFieldProps {
+  scrollOffset?: number;
+}
+
+const ParticleField = ({ scrollOffset = 0 }: ParticleFieldProps) => {
   const pointsRef = useRef<THREE.Points>(null);
   
   const particleCount = 1000;
@@ -23,6 +27,10 @@ const ParticleField = () => {
     if (pointsRef.current) {
       pointsRef.current.rotation.y += 0.0005;
       pointsRef.current.rotation.x += 0.0002;
+      
+      // Add parallax depth effect
+      pointsRef.current.position.y = scrollOffset * 0.003;
+      pointsRef.current.rotation.z = scrollOffset * 0.0001;
     }
   });
 

@@ -2,12 +2,20 @@ import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-const FloatingStars = () => {
+interface FloatingStarsProps {
+  scrollOffset?: number;
+}
+
+const FloatingStars = ({ scrollOffset = 0 }: FloatingStarsProps) => {
   const groupRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
     if (groupRef.current) {
       groupRef.current.rotation.y = state.clock.elapsedTime * 0.1;
+      
+      // Add parallax rotation and position
+      groupRef.current.rotation.x = scrollOffset * 0.0003;
+      groupRef.current.position.y = scrollOffset * 0.001;
     }
   });
 

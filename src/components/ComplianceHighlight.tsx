@@ -2,9 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CheckCircle2, FileText, Calculator, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
-import Scene3D from "@/components/3d/Scene3D";
+import ParallaxScene3D from "@/components/3d/ParallaxScene3D";
 import FloatingShield from "@/components/3d/FloatingShield";
 import FloatingGeometry from "@/components/3d/FloatingGeometry";
+import { useScroll } from "@/hooks/use-scroll";
 
 const features = [
   {
@@ -30,15 +31,17 @@ const features = [
 ];
 
 const ComplianceHighlight = () => {
+  const { scrollY } = useScroll();
+  
   return (
     <section className="py-24 bg-navy text-white relative overflow-hidden">
-      {/* 3D Shield Background */}
+      {/* 3D Shield Background with Parallax */}
       <div className="absolute right-0 top-0 w-1/3 h-full opacity-15 pointer-events-none">
-        <Scene3D>
-          <FloatingShield />
-          <FloatingGeometry position={[-2, -1, 0]} type="octahedron" />
-          <FloatingGeometry position={[2, 2, -1]} type="torus" />
-        </Scene3D>
+        <ParallaxScene3D scrollY={scrollY} parallaxStrength={1}>
+          <FloatingShield scrollOffset={scrollY} />
+          <FloatingGeometry position={[-2, -1, 0]} type="octahedron" scrollOffset={scrollY * 0.9} />
+          <FloatingGeometry position={[2, 2, -1]} type="torus" scrollOffset={scrollY * 1.1} />
+        </ParallaxScene3D>
       </div>
 
       {/* Background pattern */}

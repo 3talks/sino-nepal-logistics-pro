@@ -3,13 +3,21 @@ import { useFrame } from '@react-three/fiber';
 import { RoundedBox } from '@react-three/drei';
 import * as THREE from 'three';
 
-const FloatingShield = () => {
+interface FloatingShieldProps {
+  scrollOffset?: number;
+}
+
+const FloatingShield = ({ scrollOffset = 0 }: FloatingShieldProps) => {
   const groupRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
     if (groupRef.current) {
       groupRef.current.rotation.y = state.clock.elapsedTime * 0.3;
-      groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.3;
+      
+      // Add parallax effect
+      const floatY = Math.sin(state.clock.elapsedTime * 0.5) * 0.3;
+      groupRef.current.position.y = floatY + (scrollOffset * 0.002);
+      groupRef.current.position.x = Math.sin(scrollOffset * 0.0005) * 0.5;
     }
   });
 

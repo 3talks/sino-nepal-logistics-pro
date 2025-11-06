@@ -6,16 +6,22 @@ import * as THREE from 'three';
 interface GeometryProps {
   position: [number, number, number];
   type: 'sphere' | 'torus' | 'octahedron';
+  scrollOffset?: number;
 }
 
-const FloatingGeometry = ({ position, type }: GeometryProps) => {
+const FloatingGeometry = ({ position, type, scrollOffset = 0 }: GeometryProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
     if (meshRef.current) {
       meshRef.current.rotation.x += 0.005;
       meshRef.current.rotation.y += 0.008;
-      meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime + position[0]) * 0.3;
+      
+      // Add parallax effect based on scroll
+      const parallaxY = scrollOffset * 0.002;
+      const floatOffset = Math.sin(state.clock.elapsedTime + position[0]) * 0.3;
+      meshRef.current.position.y = position[1] + floatOffset + parallaxY;
+      meshRef.current.position.x = position[0] + Math.sin(scrollOffset * 0.001) * 0.5;
     }
   });
 

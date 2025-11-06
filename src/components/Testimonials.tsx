@@ -1,7 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Star, Quote } from "lucide-react";
-import Scene3D from "@/components/3d/Scene3D";
+import ParallaxScene3D from "@/components/3d/ParallaxScene3D";
 import FloatingStars from "@/components/3d/FloatingStars";
+import { useScroll } from "@/hooks/use-scroll";
 
 const testimonials = [
   {
@@ -31,13 +32,15 @@ const testimonials = [
 ];
 
 const Testimonials = () => {
+  const { scrollY } = useScroll();
+  
   return (
     <section className="py-24 bg-background relative overflow-hidden">
-      {/* 3D Stars Background */}
+      {/* 3D Stars Background with Parallax */}
       <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <Scene3D>
-          <FloatingStars />
-        </Scene3D>
+        <ParallaxScene3D scrollY={scrollY} parallaxStrength={0.6}>
+          <FloatingStars scrollOffset={scrollY} />
+        </ParallaxScene3D>
       </div>
 
       <div className="container mx-auto px-4 relative z-10">

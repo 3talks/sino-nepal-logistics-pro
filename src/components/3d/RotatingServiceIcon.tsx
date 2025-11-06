@@ -6,16 +6,20 @@ import * as THREE from 'three';
 interface RotatingServiceIconProps {
   color: string;
   index: number;
+  scrollOffset?: number;
 }
 
-const RotatingServiceIcon = ({ color, index }: RotatingServiceIconProps) => {
+const RotatingServiceIcon = ({ color, index, scrollOffset = 0 }: RotatingServiceIconProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
     if (meshRef.current) {
       meshRef.current.rotation.y = state.clock.elapsedTime * 0.5 + index;
       meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3 + index) * 0.2;
-      meshRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5 + index * 0.5) * 0.2;
+      
+      // Add parallax floating with scroll
+      const floatY = Math.sin(state.clock.elapsedTime * 0.5 + index * 0.5) * 0.2;
+      meshRef.current.position.y = floatY + (scrollOffset * 0.0015);
     }
   });
 

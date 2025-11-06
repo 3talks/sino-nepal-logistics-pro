@@ -1,22 +1,25 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Package, Shield, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
-import Scene3D from "@/components/3d/Scene3D";
+import ParallaxScene3D from "@/components/3d/ParallaxScene3D";
 import FloatingBox from "@/components/3d/FloatingBox";
 import ParticleField from "@/components/3d/ParticleField";
 import FloatingGeometry from "@/components/3d/FloatingGeometry";
+import { useScroll } from "@/hooks/use-scroll";
 
 const Hero = () => {
+  const { scrollY } = useScroll();
+  
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* 3D Background */}
+      {/* 3D Background with Parallax */}
       <div className="absolute inset-0 opacity-30">
-        <Scene3D>
-          <ParticleField />
-          <FloatingGeometry position={[-3, 1, 0]} type="sphere" />
-          <FloatingGeometry position={[3, -1, -2]} type="torus" />
-          <FloatingGeometry position={[0, 2, -3]} type="octahedron" />
-        </Scene3D>
+        <ParallaxScene3D scrollY={scrollY} parallaxStrength={1.5}>
+          <ParticleField scrollOffset={scrollY} />
+          <FloatingGeometry position={[-3, 1, 0]} type="sphere" scrollOffset={scrollY} />
+          <FloatingGeometry position={[3, -1, -2]} type="torus" scrollOffset={scrollY * 0.8} />
+          <FloatingGeometry position={[0, 2, -3]} type="octahedron" scrollOffset={scrollY * 1.2} />
+        </ParallaxScene3D>
       </div>
       {/* Background with parallax effect */}
       <div className="absolute inset-0 bg-gradient-hero">
