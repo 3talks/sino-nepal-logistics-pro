@@ -29,8 +29,8 @@ const Navigation = () => {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-white/95 backdrop-blur-md shadow-medium"
-          : "bg-transparent"
+          ? "bg-navy/95 backdrop-blur-md shadow-medium"
+          : "bg-navy/90 backdrop-blur-sm"
       }`}
     >
       <div className="container mx-auto px-4">
@@ -41,8 +41,8 @@ const Navigation = () => {
               <Package className="w-7 h-7 text-white" />
             </div>
             <div className="hidden md:block">
-              <h1 className="text-xl font-bold text-navy">SNLH</h1>
-              <p className="text-xs text-teal font-medium">Sino-Nepal Logistics</p>
+              <h1 className="text-xl font-bold text-white">SNLH</h1>
+              <p className="text-xs text-gold font-medium">Sino-Nepal Logistics</p>
             </div>
           </Link>
 
@@ -54,8 +54,8 @@ const Navigation = () => {
                 to={link.path}
                 className={`font-medium transition-colors duration-300 relative group ${
                   location.pathname === link.path
-                    ? "text-teal"
-                    : "text-navy hover:text-teal"
+                    ? "text-gold"
+                    : "text-white hover:text-gold"
                 }`}
               >
                 {link.name}
@@ -80,7 +80,7 @@ const Navigation = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 text-navy hover:text-teal transition-colors"
+            className="lg:hidden p-2 text-white hover:text-gold transition-colors"
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -97,8 +97,8 @@ const Navigation = () => {
                   onClick={() => setIsOpen(false)}
                   className={`font-medium py-2 transition-colors ${
                     location.pathname === link.path
-                      ? "text-teal"
-                      : "text-navy hover:text-teal"
+                      ? "text-gold"
+                      : "text-white hover:text-gold"
                   }`}
                 >
                   {link.name}
