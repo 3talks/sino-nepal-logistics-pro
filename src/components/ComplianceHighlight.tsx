@@ -2,6 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CheckCircle2, FileText, Calculator, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
+import Scene3D from "@/components/3d/Scene3D";
+import FloatingShield from "@/components/3d/FloatingShield";
+import FloatingGeometry from "@/components/3d/FloatingGeometry";
 
 const features = [
   {
@@ -29,6 +32,15 @@ const features = [
 const ComplianceHighlight = () => {
   return (
     <section className="py-24 bg-navy text-white relative overflow-hidden">
+      {/* 3D Shield Background */}
+      <div className="absolute right-0 top-0 w-1/3 h-full opacity-15 pointer-events-none">
+        <Scene3D>
+          <FloatingShield />
+          <FloatingGeometry position={[-2, -1, 0]} type="octahedron" />
+          <FloatingGeometry position={[2, 2, -1]} type="torus" />
+        </Scene3D>
+      </div>
+
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiPjxwYXRoIGQ9Ik0zNiAxOGMwLTIuMjEtMS43OS00LTQtNHMtNCAxLjc5LTQgNCAxLjc5IDQgNCA0IDQtMS43OSA0LTR6bS00IDE0Yy0yLjIxIDAtNCAxLjc5LTQgNHMxLjc5IDQgNCA0IDQtMS43OSA0LTQtMS43OS00LTQtNHoiLz48L2c+PC9nPjwvc3ZnPg==')] " />

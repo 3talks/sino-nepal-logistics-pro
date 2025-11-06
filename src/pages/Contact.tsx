@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import Scene3D from "@/components/3d/Scene3D";
+import FloatingGeometry from "@/components/3d/FloatingGeometry";
 
 const Contact = () => {
   const contactInfo = [
@@ -49,8 +51,18 @@ const Contact = () => {
       </section>
 
       {/* Contact Info Cards */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
+      <section className="py-16 relative overflow-hidden">
+        {/* 3D Background */}
+        <div className="absolute inset-0 opacity-15 pointer-events-none">
+          <Scene3D>
+            <FloatingGeometry position={[-3, 1, 0]} type="sphere" />
+            <FloatingGeometry position={[3, -1, -1]} type="torus" />
+            <FloatingGeometry position={[0, 2, -2]} type="octahedron" />
+            <FloatingGeometry position={[-2, -2, 1]} type="sphere" />
+          </Scene3D>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             {contactInfo.map((info, index) => (
               <Card key={index} className="p-6 text-center hover:shadow-xl transition-all">

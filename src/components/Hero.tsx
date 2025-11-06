@@ -1,10 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Package, Shield, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
+import Scene3D from "@/components/3d/Scene3D";
+import FloatingBox from "@/components/3d/FloatingBox";
+import ParticleField from "@/components/3d/ParticleField";
+import FloatingGeometry from "@/components/3d/FloatingGeometry";
 
 const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* 3D Background */}
+      <div className="absolute inset-0 opacity-30">
+        <Scene3D>
+          <ParticleField />
+          <FloatingGeometry position={[-3, 1, 0]} type="sphere" />
+          <FloatingGeometry position={[3, -1, -2]} type="torus" />
+          <FloatingGeometry position={[0, 2, -3]} type="octahedron" />
+        </Scene3D>
+      </div>
       {/* Background with parallax effect */}
       <div className="absolute inset-0 bg-gradient-hero">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE4YzAtMi4yMS0xLjc5LTQtNC00cy00IDEuNzktNCA0IDEuNzkgNCA0IDQgNC0xLjc5IDQtNHptLTQgMTRjLTIuMjEgMC00IDEuNzktNCA0czEuNzkgNCA0IDQgNC0xLjc5IDQtNC0xLjc5LTQtNC00eiIvPjwvZz48L2c+PC9zdmc+')] opacity-20" />

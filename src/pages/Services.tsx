@@ -3,6 +3,9 @@ import Footer from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Package, Plane, Ship, Truck, FileText, Shield } from "lucide-react";
+import Scene3D from "@/components/3d/Scene3D";
+import RotatingServiceIcon from "@/components/3d/RotatingServiceIcon";
+import FloatingGeometry from "@/components/3d/FloatingGeometry";
 
 const Services = () => {
   const services = [
@@ -69,8 +72,23 @@ const Services = () => {
       </section>
 
       {/* Services Grid */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
+      <section className="py-16 relative overflow-hidden">
+        {/* 3D Background */}
+        <div className="absolute inset-0 opacity-15 pointer-events-none">
+          <Scene3D>
+            {services.map((_, index) => (
+              <RotatingServiceIcon 
+                key={index}
+                color="#00B4A1"
+                index={index}
+              />
+            ))}
+            <FloatingGeometry position={[-4, 2, 0]} type="sphere" />
+            <FloatingGeometry position={[4, -2, -1]} type="octahedron" />
+          </Scene3D>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => (
               <Card

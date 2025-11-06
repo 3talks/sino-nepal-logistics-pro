@@ -2,6 +2,9 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Target, Users, Award, Globe } from "lucide-react";
+import Scene3D from "@/components/3d/Scene3D";
+import FloatingGeometry from "@/components/3d/FloatingGeometry";
+import ParticleField from "@/components/3d/ParticleField";
 
 const About = () => {
   const values = [
@@ -66,8 +69,18 @@ const About = () => {
       </section>
 
       {/* Values Section */}
-      <section className="py-16 bg-navy/5">
-        <div className="container mx-auto px-4">
+      <section className="py-16 bg-navy/5 relative overflow-hidden">
+        {/* 3D Background */}
+        <div className="absolute inset-0 opacity-20 pointer-events-none">
+          <Scene3D>
+            <ParticleField />
+            <FloatingGeometry position={[-3, 1, 0]} type="torus" />
+            <FloatingGeometry position={[3, -1, -1]} type="sphere" />
+            <FloatingGeometry position={[0, 2, -2]} type="octahedron" />
+          </Scene3D>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <h2 className="text-3xl font-bold text-navy text-center mb-12">
             What Drives Us
           </h2>

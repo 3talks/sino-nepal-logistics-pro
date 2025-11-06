@@ -2,6 +2,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plane, Ship, Truck, FileCheck, Warehouse, Network } from "lucide-react";
 import { Link } from "react-router-dom";
+import Scene3D from "@/components/3d/Scene3D";
+import RotatingServiceIcon from "@/components/3d/RotatingServiceIcon";
 
 const services = [
   {
@@ -50,8 +52,21 @@ const services = [
 
 const ServicesPreview = () => {
   return (
-    <section className="py-24 bg-gradient-subtle">
-      <div className="container mx-auto px-4">
+    <section className="py-24 bg-gradient-subtle relative overflow-hidden">
+      {/* 3D Service Icons Background */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <Scene3D enableControls={false}>
+          {services.map((service, index) => (
+            <RotatingServiceIcon 
+              key={index}
+              color={service.color.split(' ')[0].replace('from-', '#')}
+              index={index}
+            />
+          ))}
+        </Scene3D>
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <h2 className="text-4xl md:text-5xl font-bold text-navy">

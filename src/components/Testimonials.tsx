@@ -1,5 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Star, Quote } from "lucide-react";
+import Scene3D from "@/components/3d/Scene3D";
+import FloatingStars from "@/components/3d/FloatingStars";
 
 const testimonials = [
   {
@@ -30,8 +32,15 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <section className="py-24 bg-background">
-      <div className="container mx-auto px-4">
+    <section className="py-24 bg-background relative overflow-hidden">
+      {/* 3D Stars Background */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <Scene3D>
+          <FloatingStars />
+        </Scene3D>
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <h2 className="text-4xl md:text-5xl font-bold text-navy">
