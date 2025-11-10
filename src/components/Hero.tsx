@@ -5,6 +5,7 @@ import ParallaxScene3D from "@/components/3d/ParallaxScene3D";
 import FloatingBox from "@/components/3d/FloatingBox";
 import ParticleField from "@/components/3d/ParticleField";
 import FloatingGeometry from "@/components/3d/FloatingGeometry";
+import LogisticsTruck from "@/components/3d/LogisticsTruck";
 import { useScroll } from "@/hooks/use-scroll";
 
 const Hero = () => {
@@ -19,6 +20,7 @@ const Hero = () => {
           <FloatingGeometry position={[-3, 1, 0]} type="sphere" scrollOffset={scrollY} />
           <FloatingGeometry position={[3, -1, -2]} type="torus" scrollOffset={scrollY * 0.8} />
           <FloatingGeometry position={[0, 2, -3]} type="octahedron" scrollOffset={scrollY * 1.2} />
+          <LogisticsTruck scrollOffset={scrollY} />
         </ParallaxScene3D>
       </div>
       {/* Background with parallax effect */}
