@@ -116,13 +116,13 @@ const DutyCalculator = () => {
                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[500px] p-0" align="start">
-              <Command>
+            <PopoverContent className="w-[500px] p-0 bg-background z-50" align="start">
+              <Command className="bg-background">
                 <CommandInput placeholder="Search by HS code or description..." />
-                <CommandList>
+                <CommandList className="max-h-[400px]">
                   <CommandEmpty>No HS code found.</CommandEmpty>
                   <CommandGroup>
-                    {(hsCodesData as HSCode[]).slice(0, 100).map((item) => (
+                    {(hsCodesData as HSCode[]).map((item) => (
                       <CommandItem
                         key={item.hsCode}
                         value={`${item.hsCode} ${item.description}`}
@@ -130,6 +130,7 @@ const DutyCalculator = () => {
                           setHsCode(item.hsCode);
                           setOpen(false);
                         }}
+                        className="cursor-pointer"
                       >
                         <Check
                           className={cn(
@@ -139,7 +140,7 @@ const DutyCalculator = () => {
                         />
                         <div className="flex flex-col">
                           <span className="font-semibold">{item.hsCode}</span>
-                          <span className="text-xs text-gray-600 line-clamp-2">
+                          <span className="text-xs text-muted-foreground line-clamp-2">
                             {item.description}
                           </span>
                         </div>
