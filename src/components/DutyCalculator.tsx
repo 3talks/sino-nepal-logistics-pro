@@ -4,8 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calculator } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Calculator, Check, ChevronsUpDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 import hsCodesData from "@/assets/hs-codes.json";
 
 type Currency = "USD" | "CNY" | "NPR";
@@ -24,6 +27,7 @@ const EXCHANGE_RATES: Record<Currency, number> = {
 
 const DutyCalculator = () => {
   const [hsCode, setHsCode] = useState("");
+  const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState("");
   const [currency, setCurrency] = useState<Currency>("USD");
   const [result, setResult] = useState<{
@@ -34,6 +38,10 @@ const DutyCalculator = () => {
     hsDescription: string;
   } | null>(null);
   const { toast } = useToast();
+
+  const selectedHSCode = (hsCodesData as HSCode[]).find(
+    (item) => item.hsCode === hsCode
+  );
 
   const calculateDuty = () => {
     if (!hsCode || !amount) {
@@ -89,13 +97,59 @@ const DutyCalculator = () => {
 
       <div className="space-y-4 mb-6">
         <div>
-          <Label htmlFor="hsCode">HS Code</Label>
-          <Input
-            id="hsCode"
-            placeholder="Enter HS code (e.g., 03019500)"
-            value={hsCode}
-            onChange={(e) => setHsCode(e.target.value)}
-          />
+          <Label>HS Code</Label>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={open}
+                className="w-full justify-between"
+              >
+                {hsCode ? (
+                  <span className="truncate">
+                    {hsCode} - {selectedHSCode?.description.substring(0, 50)}...
+                  </span>
+                ) : (
+                  "Search HS code or description..."
+                )}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[500px] p-0" align="start">
+              <Command>
+                <CommandInput placeholder="Search by HS code or description..." />
+                <CommandList>
+                  <CommandEmpty>No HS code found.</CommandEmpty>
+                  <CommandGroup>
+                    {(hsCodesData as HSCode[]).slice(0, 100).map((item) => (
+                      <CommandItem
+                        key={item.hsCode}
+                        value={`${item.hsCode} ${item.description}`}
+                        onSelect={() => {
+                          setHsCode(item.hsCode);
+                          setOpen(false);
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            hsCode === item.hsCode ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        <div className="flex flex-col">
+                          <span className="font-semibold">{item.hsCode}</span>
+                          <span className="text-xs text-gray-600 line-clamp-2">
+                            {item.description}
+                          </span>
+                        </div>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
