@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, FileCheck, Shield, AlertCircle } from "lucide-react";
+import DutyCalculator from "@/components/DutyCalculator";
 
 const Compliance = () => {
   const complianceServices = [
@@ -20,11 +21,6 @@ const Compliance = () => {
       icon: CheckCircle,
       title: "Documentation Support",
       description: "Complete assistance with bills of lading, certificates of origin, and more.",
-    },
-    {
-      icon: AlertCircle,
-      title: "Duty Calculation",
-      description: "Accurate calculation of customs duties, taxes, and fees.",
     },
   ];
 
@@ -61,7 +57,7 @@ const Compliance = () => {
           <h2 className="text-3xl font-bold text-navy text-center mb-12">
             Our Compliance Services
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {complianceServices.map((service, index) => (
               <Card key={index} className="p-6 text-center hover:shadow-xl transition-all">
                 <div className="w-16 h-16 bg-gradient-card rounded-full flex items-center justify-center mx-auto mb-4">
@@ -75,8 +71,23 @@ const Compliance = () => {
         </div>
       </section>
 
-      {/* Import Guidelines */}
+      {/* Duty Calculator Section */}
       <section className="py-16 bg-navy/5">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold text-navy text-center mb-4">
+              Duty Calculator
+            </h2>
+            <p className="text-center text-gray-600 mb-8">
+              Calculate accurate customs duties based on HS codes and current exchange rates
+            </p>
+            <DutyCalculator />
+          </div>
+        </div>
+      </section>
+
+      {/* Import Guidelines */}
+      <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold text-navy text-center mb-12">
