@@ -272,7 +272,7 @@ const DutyCalculator = () => {
     const bankCharge = (amountInNPR * 5) / 100;
     const insuranceCharge = (amountInNPR * 0.005) / 100;
     const totalAmount = amountInNPR + dutyAmount;
-    const grandTotal = totalAmount + freight + bankCharge + insuranceCharge;
+    const grandTotal = dutyAmount + freight + bankCharge + insuranceCharge;
 
     setResult({
       dutyRate,
