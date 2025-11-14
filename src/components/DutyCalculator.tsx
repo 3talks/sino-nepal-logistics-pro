@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { Calculator, Check, ChevronsUpDown, Package, Warehouse } from "lucide-react";
+import { Calculator, Check, ChevronsUpDown, Package, Warehouse, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import hsCodesData from "@/assets/hs-codes.json";
+import jsPDF from "jspdf";
 
 type Currency = "USD" | "CNY" | "NPR";
 
@@ -83,6 +84,9 @@ const DutyCalculator = () => {
     totalAmount: number;
     amountInNPR: number;
     hsDescription: string;
+    bankCharge: number;
+    insuranceCharge: number;
+    grandTotal: number;
   } | null>(null);
   const { toast } = useToast();
 
@@ -138,6 +142,106 @@ const DutyCalculator = () => {
     });
   };
 
+  const downloadPDF = () => {
+    if (!result) return;
+
+    const pdf = new jsPDF();
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    
+    // Company Header
+    pdf.setFontSize(20);
+    pdf.setFont("helvetica", "bold");
+    pdf.text("Nepal Samundrik Tara Pvt. Ltd", pageWidth / 2, 20, { align: "center" });
+    
+    pdf.setFontSize(16);
+    pdf.text("QUOTATION", pageWidth / 2, 30, { align: "center" });
+    
+    // Line separator
+    pdf.setLineWidth(0.5);
+    pdf.line(20, 35, pageWidth - 20, 35);
+    
+    let yPos = 45;
+    pdf.setFontSize(12);
+    pdf.setFont("helvetica", "normal");
+    
+    // Product Information
+    pdf.setFont("helvetica", "bold");
+    pdf.text("Product Details:", 20, yPos);
+    yPos += 8;
+    pdf.setFont("helvetica", "normal");
+    pdf.text(`HS Code: ${hsCode}`, 25, yPos);
+    yPos += 6;
+    pdf.text(`Description: ${result.hsDescription.substring(0, 80)}`, 25, yPos);
+    yPos += 10;
+    
+    // Warehouse Information
+    if (selectedWarehouseInfo) {
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Warehouse Details:", 20, yPos);
+      yPos += 8;
+      pdf.setFont("helvetica", "normal");
+      pdf.text(`Name: ${selectedWarehouseInfo.name}`, 25, yPos);
+      yPos += 6;
+      pdf.text(`Address: ${selectedWarehouseInfo.address}`, 25, yPos);
+      yPos += 6;
+      pdf.text(`Contact: ${selectedWarehouseInfo.contact}`, 25, yPos);
+      yPos += 6;
+      pdf.text(`Phone: ${selectedWarehouseInfo.phone}`, 25, yPos);
+      yPos += 10;
+    }
+    
+    // Calculation Details
+    pdf.setFont("helvetica", "bold");
+    pdf.text("Calculation Summary:", 20, yPos);
+    yPos += 8;
+    pdf.setFont("helvetica", "normal");
+    
+    const weightValue = parseFloat(weight) || 0;
+    pdf.text(`Weight: ${weightValue.toFixed(2)} kg`, 25, yPos);
+    yPos += 6;
+    
+    if (cbmResult > 0) {
+      pdf.text(`CBM: ${cbmResult.toFixed(4)} m³`, 25, yPos);
+      yPos += 6;
+    }
+    
+    yPos += 4;
+    pdf.text(`Goods Value: NPR ${result.amountInNPR.toLocaleString()}`, 25, yPos);
+    yPos += 6;
+    pdf.text(`Duty Rate: ${result.dutyRate}%`, 25, yPos);
+    yPos += 6;
+    pdf.text(`Duty Amount: NPR ${result.dutyAmount.toLocaleString()}`, 25, yPos);
+    yPos += 6;
+    pdf.text(`Freight Amount: NPR ${freight.toLocaleString()}`, 25, yPos);
+    yPos += 6;
+    pdf.text(`Bank Document Charge (5%): NPR ${result.bankCharge.toLocaleString()}`, 25, yPos);
+    yPos += 6;
+    pdf.text(`Insurance Charge (0.005%): NPR ${result.insuranceCharge.toLocaleString()}`, 25, yPos);
+    yPos += 10;
+    
+    // Total
+    pdf.setLineWidth(0.3);
+    pdf.line(20, yPos, pageWidth - 20, yPos);
+    yPos += 8;
+    
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(14);
+    pdf.text(`TOTAL PAYABLE AMOUNT: NPR ${result.grandTotal.toLocaleString()}`, 25, yPos);
+    
+    // Footer
+    yPos = pdf.internal.pageSize.getHeight() - 20;
+    pdf.setFontSize(10);
+    pdf.setFont("helvetica", "italic");
+    pdf.text(`Generated on: ${new Date().toLocaleString()}`, pageWidth / 2, yPos, { align: "center" });
+    
+    pdf.save("quotation.pdf");
+    
+    toast({
+      title: "PDF Downloaded",
+      description: "Your quotation has been downloaded successfully",
+    });
+  };
+
   const calculateDuty = () => {
     if (!hsCode || !amount) {
       toast({
@@ -165,7 +269,10 @@ const DutyCalculator = () => {
     const amountValue = parseFloat(amount);
     const amountInNPR = amountValue * EXCHANGE_RATES[currency];
     const dutyAmount = (amountInNPR * dutyRate) / 100;
+    const bankCharge = (amountInNPR * 5) / 100;
+    const insuranceCharge = (amountInNPR * 0.005) / 100;
     const totalAmount = amountInNPR + dutyAmount;
+    const grandTotal = totalAmount + freight + bankCharge + insuranceCharge;
 
     setResult({
       dutyRate,
@@ -173,6 +280,9 @@ const DutyCalculator = () => {
       totalAmount,
       amountInNPR,
       hsDescription: hsCodeData.description,
+      bankCharge,
+      insuranceCharge,
+      grandTotal,
     });
 
     toast({
@@ -340,41 +450,55 @@ const DutyCalculator = () => {
         </Button>
 
         {result && (
-          <Card className="mt-6 p-6 bg-muted/30">
-            <h4 className="font-bold text-lg mb-4">Calculation Results</h4>
-            
-            <div className="text-sm text-muted-foreground mb-4">
-              <span className="font-semibold">Product:</span> {result.hsDescription}
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-muted-foreground">Amount in NPR</p>
-                <p className="text-lg font-semibold">
-                  NPR {result.amountInNPR.toLocaleString()}
-                </p>
+          <div className="mt-6 space-y-4">
+            <Card className="p-6 bg-muted/30">
+              <h4 className="font-bold text-lg mb-4">Calculation Results</h4>
+              
+              <div className="text-sm text-muted-foreground mb-4">
+                <span className="font-semibold">Product:</span> {result.hsDescription}
               </div>
 
-              <div>
-                <p className="text-sm text-muted-foreground">Duty Rate</p>
-                <p className="text-lg font-semibold">{result.dutyRate}%</p>
-              </div>
+              <div className="space-y-3">
+                <div className="flex justify-between py-2 border-b border-border/50">
+                  <span className="text-muted-foreground">Goods Value</span>
+                  <span className="font-semibold">NPR {result.amountInNPR.toLocaleString()}</span>
+                </div>
 
-              <div>
-                <p className="text-sm text-muted-foreground">Duty Amount</p>
-                <p className="text-lg font-semibold">
-                  NPR {result.dutyAmount.toLocaleString()}
-                </p>
-              </div>
+                <div className="flex justify-between py-2 border-b border-border/50">
+                  <span className="text-muted-foreground">Duty Amount ({result.dutyRate}%)</span>
+                  <span className="font-semibold">NPR {result.dutyAmount.toLocaleString()}</span>
+                </div>
 
-              <div>
-                <p className="text-sm text-muted-foreground">Total Amount</p>
-                <p className="text-xl font-bold">
-                  NPR {result.totalAmount.toLocaleString()}
-                </p>
+                <div className="flex justify-between py-2 border-b border-border/50">
+                  <span className="text-muted-foreground">Freight Charge</span>
+                  <span className="font-semibold">NPR {freight.toLocaleString()}</span>
+                </div>
+
+                <div className="flex justify-between py-2 border-b border-border/50">
+                  <span className="text-muted-foreground">Bank Document Charge (5%)</span>
+                  <span className="font-semibold">NPR {result.bankCharge.toLocaleString()}</span>
+                </div>
+
+                <div className="flex justify-between py-2 border-b border-border/50">
+                  <span className="text-muted-foreground">Insurance Charge (0.005%)</span>
+                  <span className="font-semibold">NPR {result.insuranceCharge.toLocaleString()}</span>
+                </div>
+
+                <div className="flex justify-between py-3 mt-2 bg-primary/10 px-4 rounded-lg">
+                  <span className="font-bold text-lg">Total Payable Amount</span>
+                  <span className="font-bold text-xl text-primary">NPR {result.grandTotal.toLocaleString()}</span>
+                </div>
               </div>
-            </div>
-          </Card>
+            </Card>
+
+            <Button 
+              onClick={downloadPDF} 
+              className="w-full bg-gradient-card hover:opacity-90"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Download Quotation PDF
+            </Button>
+          </div>
         )}
       </Card>
 
