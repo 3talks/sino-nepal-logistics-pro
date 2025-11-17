@@ -208,8 +208,6 @@ const DutyCalculator = () => {
     yPos += 4;
     pdf.text(`Goods Value: NPR ${result.amountInNPR.toLocaleString()}`, 25, yPos);
     yPos += 6;
-    pdf.text(`Duty Rate: ${result.dutyRate}%`, 25, yPos);
-    yPos += 6;
     pdf.text(`Duty Amount: NPR ${result.dutyAmount.toLocaleString()}`, 25, yPos);
     yPos += 6;
     pdf.text(`Freight Amount: NPR ${freight.toLocaleString()}`, 25, yPos);
@@ -268,7 +266,8 @@ const DutyCalculator = () => {
     const dutyRate = parseFloat(hsCodeData.saarcothersCN);
     const amountValue = parseFloat(amount);
     const amountInNPR = amountValue * EXCHANGE_RATES[currency];
-    const dutyAmount = (amountInNPR * dutyRate) / 100;
+    const effectiveDutyRate = dutyRate + 3; // Add 3% to the duty rate
+    const dutyAmount = (amountInNPR * effectiveDutyRate) / 100;
     const bankCharge = (amountInNPR * 5) / 100;
     const insuranceCharge = (amountInNPR * 0.005) / 100;
     const totalAmount = amountInNPR + dutyAmount;
@@ -465,7 +464,7 @@ const DutyCalculator = () => {
                 </div>
 
                 <div className="flex justify-between py-2 border-b border-border/50">
-                  <span className="text-muted-foreground">Duty Amount ({result.dutyRate}%)</span>
+                  <span className="text-muted-foreground">Duty Amount</span>
                   <span className="font-semibold">NPR {result.dutyAmount.toLocaleString()}</span>
                 </div>
 
